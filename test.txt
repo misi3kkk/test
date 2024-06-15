@@ -1,0 +1,48 @@
+class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+    private val kosztdojazduhistory = mutableListOf<Double>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.oblicz.setOnClickListener() {
+            val srednie_spalanie = binding.sredniespalanie.text.toString()
+            val cena_paliwa = binding.cenapaliwa.text.toString()
+            val dlugosc_trasy = binding.dlugosctrasy.text.toString()
+            val dodatkowe_koszty = binding.dodatkowekosztyprzejazdu.text.toString()
+
+            val srspal = srednie_spalanie.toDouble()
+            val paliwo = cena_paliwa.toDouble()
+            val dltrasy = dlugosc_trasy.toDouble()
+            val dodkoszty = dodatkowe_koszty.toDouble()
+
+            //Obliczenia
+
+            val zuzycie_paliwa = (dltrasy / 100) * srspal
+            val koszt_paliwa = zuzycie_paliwa * paliwo
+            val calkowity_koszt = koszt_paliwa + dodkoszty
+
+            kosztdojazduhistory.add(calkowity_koszt)
+
+            Toast.makeText(applicationContext, "Średnie spalanie: %.2f".format(srspal), Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "Cena paliwa: %.2f".format(paliwo), Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "Długość trasy: %.2f".format(dltrasy), Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "Dodatkowe koszty: %.2f".format(dodkoszty), Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "Koszt paliwa: %.2f".format(koszt_paliwa), Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "Całkowity koszt: %.2f".format(calkowity_koszt), Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext,"Całkowity koszt przejazdu: %.2f".format(calkowity_koszt),Toast.LENGTH_SHORT).show()
+        }
+        binding.historia.setOnClickListener() {
+            if (kosztdojazduhistory.isNotEmpty()) {
+                val historyString =
+                    kosztdojazduhistory.joinToString(separator = "\n") { "Koszt dojazdu: %.2f".format(it) }
+                binding.historyText.text = String.format("Historia kosztów dojazdów:\n$historyString")
+            } else {
+                binding.historyText.text = String.format("Brak zapisanych wyników kosztów dojazdu")
+            }
+
+        }
+    }
+}
